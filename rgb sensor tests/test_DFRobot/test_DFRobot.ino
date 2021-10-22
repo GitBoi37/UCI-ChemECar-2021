@@ -24,17 +24,23 @@ void setup() {
 }
 
 void loop() {
-  //clear is the sum of all 3, RGB are self-explanatory
+  //clear is the sum of all 3 i think, RGB are self-explanatory
   //see above for max values depending on integration time
-  uint16_t clear, red, green, blue;
-  tcs.getRGBC(&red, &green, &blue, &clear);
+  uint16_t clear, red, green, blue, colorTemperature, lux;
+  tcs.getRGBC(&red, &green, &blue, &clear); //get RGB and C
   tcs.lock();  // turn off LED (doesn't work on the new sensors)
-  Serial.print("C:\t"); Serial.print(clear);
-  Serial.print("\tR:\t"); Serial.print(red);
-  Serial.print("\tG:\t"); Serial.print(green);
-  Serial.print("\tB:\t"); Serial.print(blue);
+  colorTemperature = tcs.calculateColorTemperature(red, green, blue); //calculate color temperature
+  lux = tcs.calculateLux(red, green, blue); //calculate lux
+  Serial.print("K: "); Serial.print(colorTemperature);
+  Serial.print(" Lux: "); Serial.print(lux);
+  Serial.print(" C: "); Serial.print(clear);
+  Serial.print(" R: "); Serial.print(red);
+  Serial.print(" G: "); Serial.print(green);
+  Serial.print(" B: "); Serial.print(blue);
   Serial.println("\t");
-
+  //output should look like:
+  //K:num,Lux:num,C:num,R:num,R:num,G:,num,B:num
+  //K: num Lux: num C:num R:num R:num G: num B:num
   // Figure out some basic hex code for visualization
   uint32_t sum = clear;
   float r, g, b;
