@@ -3,14 +3,28 @@ from time import localtime,strftime,sleep
 
 
 if __name__ == "__main__":
+    print("Starting up...")
+    sleep(2)
     #figure out what port is really used
-    iStr = "What is the number of the port being used? It is the com port selected in the arduino IDE. Enter the number only: "
-    zer = input(iStr)
+    try:
+        iStr = "What is the number of the port being used? It is the com port selected in the arduino IDE. Enter the number only: "
+        zer = input(iStr)
+    except Exception as e:
+        print("Unknown error")
+        print(e)
     arduino_port = f"COM{zer}"
     baud = 9600 #arduino uno runs at 9600 baud
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
     fileName = f"collected_data/color_data_{fTime}.csv" #name of csv generated
+    print("Checking directory...")
+    try:
+        os.makedirs("/collected_data")
+        print("Make folder to store data in \"collected data\"")
+    except FileExistsError:
+        # directory already exists
+        print("Dir exists, continue")
+        pass
     header = "input,colorTemp,lux,R,G,B"
     try:
         ser = Serial(
@@ -27,6 +41,8 @@ if __name__ == "__main__":
         sys.exit()
 
     print(f"Connected to Arduino port: {arduino_port}")
+    
+
     print("Creating .csv file...")
     try:
         file = open(fileName, "w")
