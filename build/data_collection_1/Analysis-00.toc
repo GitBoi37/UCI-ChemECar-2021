@@ -1,6 +1,7 @@
 (['C:\\Users\\Lance '
-  'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_1.py'],
- ['C:\\Users\\Lance Eades\\Documents\\GitHub\\UCI-ChemECar-2021'],
+  'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_with_python\\data_collection_1.py'],
+ ['C:\\Users\\Lance '
+  'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_with_python'],
  ['codecs'],
  [],
  {},
@@ -25,7 +26,7 @@
    'PYSOURCE'),
   ('data_collection_1',
    'C:\\Users\\Lance '
-   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_1.py',
+   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_with_python\\data_collection_1.py',
    'PYSOURCE')],
  [('os',
    'C:\\Program '
@@ -90,6 +91,14 @@
   ('importlib.metadata',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\importlib\\metadata.py',
+   'PYMODULE'),
+  ('importlib.abc',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\importlib\\abc.py',
+   'PYMODULE'),
+  ('typing',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\typing.py',
    'PYMODULE'),
   ('configparser',
    'C:\\Program '
@@ -615,10 +624,6 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\asyncio\\staggered.py',
    'PYMODULE'),
-  ('typing',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\typing.py',
-   'PYMODULE'),
   ('asyncio.tasks',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\asyncio\\tasks.py',
@@ -847,10 +852,6 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\csv.py',
    'PYMODULE'),
-  ('importlib.abc',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\importlib\\abc.py',
-   'PYMODULE'),
   ('importlib._bootstrap',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\importlib\\_bootstrap.py',
@@ -883,10 +884,6 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\ast.py',
    'PYMODULE'),
-  ('tracemalloc',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\tracemalloc.py',
-   'PYMODULE'),
   ('stringprep',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\stringprep.py',
@@ -894,6 +891,10 @@
   ('_py_abc',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\_py_abc.py',
+   'PYMODULE'),
+  ('tracemalloc',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_3.9.2032.0_x64__qbz5n2kfra8p0\\lib\\tracemalloc.py',
    'PYMODULE'),
   ('serial',
    'C:\\Users\\Lance '

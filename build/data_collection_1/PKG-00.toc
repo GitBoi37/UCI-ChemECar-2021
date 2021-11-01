@@ -50,7 +50,7 @@
    'PYSOURCE'),
   ('data_collection_1',
    'C:\\Users\\Lance '
-   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_1.py',
+   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_with_python\\data_collection_1.py',
    'PYSOURCE'),
   ('python39.dll',
    'C:\\Program '

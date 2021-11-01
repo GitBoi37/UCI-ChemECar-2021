@@ -1,10 +1,12 @@
 from serial import *
 from time import localtime,strftime,sleep
 
+
 if __name__ == "__main__":
     #figure out what port is really used
     iStr = "What is the number of the port being used? It is the com port selected in the arduino IDE. Enter the number only: "
-    arduino_port = f"COM{input(iStr)}"
+    zer = input(iStr)
+    arduino_port = f"COM{zer}"
     baud = 9600 #arduino uno runs at 9600 baud
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)

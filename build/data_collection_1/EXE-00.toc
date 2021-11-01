@@ -58,7 +58,7 @@
    'PYSOURCE'),
   ('data_collection_1',
    'C:\\Users\\Lance '
-   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_1.py',
+   'Eades\\Documents\\GitHub\\UCI-ChemECar-2021\\data_collection_with_python\\data_collection_1.py',
    'PYSOURCE'),
   ('python39.dll',
    'C:\\Program '
@@ -143,7 +143,7 @@
  [],
  False,
  False,
- 1635727118,
+ 1635782057,
  [('runw.exe',
    'C:\\Users\\Lance '
    'Eades\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python39\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
