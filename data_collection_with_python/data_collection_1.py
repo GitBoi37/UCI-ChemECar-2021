@@ -47,7 +47,6 @@ def makeFileTimeBased(header):
         # directory already exists
         print("Dir exists, continue")
         pass
-<<<<<<< HEAD
     header = "input,colorTemp,lux,R,G,B"
     try:
         ser = Serial(
@@ -66,7 +65,6 @@ def makeFileTimeBased(header):
     print(f"Connected to Arduino port: {arduino_port}")
     
 
-=======
     print("Creating .csv file...")
     try:
         file = open(fileName, "w")
@@ -92,7 +90,6 @@ def makeFileEventBased(header):
         # directory already exists
         print("Dir exists, continue")
         pass
->>>>>>> TestBranch
     print("Creating .csv file...")
     try:
         file = open(fileName, "w")
@@ -102,16 +99,8 @@ def makeFileEventBased(header):
         print("Couldn't write file and idk how exceptions work with that so you're SOL maybe don't have bad file names or something")
         if(file.closed() != True):
             file.close()
-<<<<<<< HEAD
 
     print("File created!")
-    i = "e"
-    print("Ready to collect data! Please note that data collection is sometimes weird but that's just comm error. Simply record another data point. \nType end to end, otherwise input test name:")
-    while True:
-        i = input("Input: ")
-        ser.flushInput()
-        sleep(0.25)
-=======
     return file
 
 
@@ -170,13 +159,11 @@ def collectEventBasedData(ser):
     i = "e"
     while True:  
         i = input("Input: ")
->>>>>>> TestBranch
         if(i == "end"):
             print("Ending collection...")
             #close the file
             file.close()
             break
-<<<<<<< HEAD
         
         try:
             #get and display data to terminal
@@ -186,7 +173,6 @@ def collectEventBasedData(ser):
             file.write(str(i) + "," + data +"\n")
         except IOError:
             print("Error writing data")
-=======
         try:
             while(True):
                 #get and display data to terminal
@@ -204,7 +190,6 @@ def collectEventBasedData(ser):
             file.write(str(i) + "," + data +"\n")
         except IOError as e:
             print(e)
->>>>>>> TestBranch
         except TypeError(str):
             print("invalid str in")
         except SerialException:
@@ -212,8 +197,6 @@ def collectEventBasedData(ser):
         except SerialTimeoutException:
             print("Connection timed out")
 
-<<<<<<< HEAD
-=======
 
 
 if __name__ == "__main__":
@@ -249,7 +232,6 @@ if __name__ == "__main__":
     else:
         print("Beginning event based data collection")
         collectEventBasedData(ser)
->>>>>>> TestBranch
         
     if(file.closed != True):
         #close the file if not already closed
