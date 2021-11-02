@@ -1,6 +1,7 @@
 from sys import getdefaultencoding
 from serial import *
 from time import localtime,strftime,sleep
+import pathlib
 
 def connect(arduino_port, tout, baud):
     try:
@@ -35,17 +36,17 @@ def getPort():
 
 
 
-def makeFileTimeBased(header):
+def makeFileTimeBased(header, location):
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-    fileName = f"/collected_data/event_based_data_{fTime}.csv" #name of csv generated
+    fileName = f"{location}/event_based_data_{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
-        os.makedirs("/collected_dat")
-        print("Make folder to store data in \"collected data\"")
-    except FileExistsError:
+        os.makedirs(location)
+        print(f"Make folder to store data in {location}")
+    except Exception as e:
         # directory already exists
-        print("Dir exists, continue")
+        print(e)
         pass
     header = "input,colorTemp,lux,R,G,B"
 
@@ -54,9 +55,11 @@ def makeFileTimeBased(header):
         file = open(fileName, "w")
         file.write("")
         file.write(f"{header}\n")
-    except Exception:
-        print("Couldn't write file and idk how exceptions work with that so you're SOL maybe don't have bad file names or something")
-        if(file.closed() != True):
+        print(f"file created at {os.path.realpath(file.name)}")
+        #print(f"File created at {print(pathlib.Path(file).parent.absolute())}!")
+    except Exception as e:
+        print(e)
+        if(file.closed   != True):
             file.close()
     return file
 
@@ -65,23 +68,24 @@ def makeFileTimeBased(header):
 def makeFileEventBased(header, location):
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-    fileName = f"/collected_data/event_based_data_{fTime}.csv" #name of csv generated
+    fileName = f"{location}/event_based_data_{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
         os.makedirs(location)
         print(f"Make folder to store data in \"{location}\"")
-    except FileExistsError:
+    except Exception as e:
         # directory already exists
-        print("Dir exists, continue")
+        print(e)
         pass
     print("Creating .csv file...")
     try:
         file = open(fileName, "w")
         file.write("")
         file.write(f"{header}\n")
-        print("File created!")
-    except:
-        print("Couldn't write file and idk how exceptions work with that so you're SOL maybe don't have bad file names or something")
+        print(f"file created at {os.path.realpath(file.name)}")
+        #print(f"File created at {print(pathlib.Path(file).parent.absolute())}!")
+    except Exception as e:
+        print(e)
         if(file.closed() != True):
             file.close()
 
@@ -90,7 +94,7 @@ def makeFileEventBased(header, location):
 
 
 
-def collectTimeBasedData(ser):
+def collectTimeBasedData(ser, file):
     try:
         while(True):
             try:
@@ -140,7 +144,7 @@ def collectTimeBasedData(ser):
 
 
 
-def collectEventBasedData(ser):
+def collectEventBasedData(ser, file):
     print("Ready to collect data! Please note that data collection is sometimes weird but that's just comm error. Simply record another data point. \nType end to end, otherwise input test name:")
     i = "e"
     while True:  
@@ -200,26 +204,36 @@ if __name__ == "__main__":
 
     ser = connect(arduino_port, tout, baud)
 
+    '''
+    try:
+        current_time = localtime()
+        fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
+        fileName = f"{location}/event_based_data_{fTime}.csv"
+        file = open(fileName, "w")
+        file.write("")
+        file.write(f"{header}\n")
+    except Exception as e:
+        print(e)
+    '''
+
     while(True):
         mode = input("Time or event based data collection? Enter T or E: ")
         if(mode == "T"):
-            file = makeFileTimeBased(header)
+            file = makeFileTimeBased(header, location)
             break
         elif(mode == "E"):
             file = makeFileEventBased(header, location)
             break
         else:
             print("Invalid input")
-
-    print("File created!")
+    
 
     if(mode == "T"):
         print("Beginnning time based data collection")
-        collectTimeBasedData(ser)
+        collectTimeBasedData(ser, file)
     else:
         print("Beginning event based data collection")
-        collectEventBasedData(ser)
-        
+        collectEventBasedData(ser, file)
     if(file.closed != True):
         #close the file if not already closed
         file.close()
