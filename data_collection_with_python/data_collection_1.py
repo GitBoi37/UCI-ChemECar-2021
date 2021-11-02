@@ -41,29 +41,13 @@ def makeFileTimeBased(header):
     fileName = f"/collected_data/event_based_data_{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
-        os.makedirs("/collected_data")
+        os.makedirs("/collected_dat")
         print("Make folder to store data in \"collected data\"")
     except FileExistsError:
         # directory already exists
         print("Dir exists, continue")
         pass
     header = "input,colorTemp,lux,R,G,B"
-    try:
-        ser = Serial(
-            port=arduino_port,
-            baudrate=9600,
-            timeout=2,
-            xonxoff=0,
-            rtscts=0,
-            interCharTimeout=None
-        )
-    except (SerialException,FileNotFoundError):
-        print("Aborting program... wrong port / port in use / nothin in port")
-        sleep(4)
-        sys.exit()
-
-    print(f"Connected to Arduino port: {arduino_port}")
-    
 
     print("Creating .csv file...")
     try:
@@ -84,7 +68,7 @@ def makeFileEventBased(header):
     fileName = f"/collected_data/event_based_data_{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
-        os.makedirs("/collected_data")
+        os.makedirs("/collected_dat")
         print("Make folder to store data in \"collected data\"")
     except FileExistsError:
         # directory already exists
@@ -146,6 +130,7 @@ def collectTimeBasedData(ser):
                 print("Connection timed out")
             while(time.time() - s_time < deltaT):
                 pass
+            print(f"cumulative time: {cum_time}")
             cum_time += time.time() - s_time
             if(cum_time > maxT and maxT != 0):
                 break
