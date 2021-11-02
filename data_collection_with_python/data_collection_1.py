@@ -62,14 +62,14 @@ def makeFileTimeBased(header):
 
 
 
-def makeFileEventBased(header):
+def makeFileEventBased(header, location):
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
     fileName = f"/collected_data/event_based_data_{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
-        os.makedirs("/collected_dat")
-        print("Make folder to store data in \"collected data\"")
+        os.makedirs(location)
+        print(f"Make folder to store data in \"{location}\"")
     except FileExistsError:
         # directory already exists
         print("Dir exists, continue")
@@ -79,12 +79,13 @@ def makeFileEventBased(header):
         file = open(fileName, "w")
         file.write("")
         file.write(f"{header}\n")
+        print("File created!")
     except:
         print("Couldn't write file and idk how exceptions work with that so you're SOL maybe don't have bad file names or something")
         if(file.closed() != True):
             file.close()
 
-    print("File created!")
+    
     return file
 
 
@@ -156,8 +157,8 @@ def collectEventBasedData(ser):
             print(getData)
             data = getData[0:][2:-5]
             file.write(str(i) + "," + data +"\n")
-        except IOError:
-            print("Error writing data")
+        except Exception as e:
+            print(e)
         try:
             while(True):
                 #get and display data to terminal
@@ -187,6 +188,7 @@ def collectEventBasedData(ser):
 if __name__ == "__main__":
     baud = 9600 #arduino uno runs at 9600 baud
     tout = 2 #timeout for serial input
+    location = "data"
     header = "input,colorTemp,lux,R,G,B"
     file = None
     mode = ""
@@ -204,7 +206,7 @@ if __name__ == "__main__":
             file = makeFileTimeBased(header)
             break
         elif(mode == "E"):
-            file = makeFileEventBased(header)
+            file = makeFileEventBased(header, location)
             break
         else:
             print("Invalid input")
