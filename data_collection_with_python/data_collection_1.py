@@ -39,7 +39,7 @@ def getPort():
 def makeFileTimeBased(header, location):
     current_time = localtime()
     fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-    fileName = f"{location}/event_based_data_{fTime}.csv" #name of csv generated
+    fileName = f"{location}/time_based_data{fTime}.csv" #name of csv generated
     print("Checking directory...")
     try:
         os.makedirs(location)
@@ -95,6 +95,8 @@ def makeFileEventBased(header, location):
 
 
 def collectTimeBasedData(ser, file):
+    deltaT = ""
+    maxT = ""
     try:
         while(True):
             try:
@@ -105,9 +107,10 @@ def collectTimeBasedData(ser, file):
                 print("Error in input, try again")
         
         print("Data collection time!")
+        cum_time = 0
         while True:  
             s_time = time.time()
-            cum_time = 0
+            print("s_time" + str(s_time))
             ser.flushInput()
             sleep(0.1)
             try:
@@ -124,7 +127,17 @@ def collectTimeBasedData(ser, file):
                         print("invalid data point, remeasuring...")
                     else:
                         break
-                file.write(f"{time.time() - s_time},{data}\n")
+                delta = time.time() - s_time
+                print("delta" + str(delta))
+                if(delta < deltaT):
+                    sleep(deltaT - delta)
+                print("cum_time" + str(cum_time))
+                cum_time += deltaT
+                file.write(f"{cum_time},{data}\n")
+                if(cum_time > maxT):
+                    break
+
+                
             except IOError as e:
                 print(e)
             except TypeError(str):
@@ -133,12 +146,7 @@ def collectTimeBasedData(ser, file):
                 print("Problem collecting data from Arduino")
             except SerialTimeoutException:
                 print("Connection timed out")
-            while(time.time() - s_time < deltaT):
-                pass
-            print(f"cumulative time: {cum_time}")
-            cum_time += time.time() - s_time
-            if(cum_time > maxT and maxT != 0):
-                break
+            
     except:
         print("Program interrupted, ending data collection")
 
@@ -155,14 +163,6 @@ def collectEventBasedData(ser, file):
             file.close()
             break
         
-        try:
-            #get and display data to terminal
-            getData = str(ser.readline())
-            print(getData)
-            data = getData[0:][2:-5]
-            file.write(str(i) + "," + data +"\n")
-        except Exception as e:
-            print(e)
         try:
             while(True):
                 #get and display data to terminal
