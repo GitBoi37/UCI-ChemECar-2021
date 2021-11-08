@@ -32,10 +32,16 @@ void loop() {
   colorTemperature = tcs.calculateColorTemperature(red, green, blue); //calculate color temperature
   lux = tcs.calculateLux(red, green, blue); //calculate lux
   //output should look like:
-  //colorTemperature,lux,clear,R,G,B
+  //colorTemperature,lux,clear,R,G,B,rawRed,rawGreen,rawBlue,R,G,B
   Serial.print(colorTemperature);
   Serial.print(","); Serial.print(lux);
   Serial.print(","); Serial.print(clear);
+  Serial.print(","); Serial.print(red);
+  Serial.print(","); Serial.print(green);
+  Serial.print(","); Serial.print(blue);
+  uint16_t sum = red + green + blue;
+  red /= sum; green /= sum; blue /= sum;
+  red *= 256; green *= 256; blue *= 256;
   Serial.print(","); Serial.print(red);
   Serial.print(","); Serial.print(green);
   Serial.print(","); Serial.print(blue);

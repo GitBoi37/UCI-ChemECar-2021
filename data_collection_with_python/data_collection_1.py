@@ -186,15 +186,16 @@ def collectEventBasedData(ser, file):
 def getFile():
     file = None
     mode = ""
+    baseHead = "Color Temperature,Lux,Clear,R,G,B,Raw Red,Raw Green,Raw Blue,R,G,B"
     while(True):
         mode = input("Time or event based data collection? Enter T or E: ")
         name = input("Enter test name to append to file name: ")
         if(mode == "T"):
-            header = "time(s),colorTemp,lux,R,G,B"
+            header = f"time(s),{baseHead}"
             file = makeFileTimeBased(header, location, name)
             break
         elif(mode == "E"):
-            header = "input,colorTemp,lux,R,G,B"
+            header = f"input,{baseHead}"
             file = makeFileEventBased(header, location, name)
             break
         else:
