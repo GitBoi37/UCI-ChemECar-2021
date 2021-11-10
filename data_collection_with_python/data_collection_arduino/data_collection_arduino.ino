@@ -4,6 +4,11 @@
   interface the TCS34725 library, look at the library headers for
   things to use */
 
+//pins:
+//Green Wire = A4
+//Blue Wire = A5
+//Black Wire = GND
+//Red Wire = 5V
 //integration time is 154ms
 // 2_4,    24,    50,   101,   154,   700 | possible times (ms)
 //1024, 10240, 20480, 43008, 65358, 65358 | max count
@@ -11,7 +16,7 @@
 DFRobot_TCS34725 tcs = DFRobot_TCS34725(TCS34725_INTEGRATIONTIME_154MS, TCS34725_GAIN_4X);
 
 void setup() {
-  //must set baud to 115200 in the serial monitor!
+  //must set baud to 9600 in the serial monitor!
   Serial.begin(9600);
   Serial.println("Color View Test!");
   //if sensor is on then do things else, halt
