@@ -3,7 +3,11 @@
 /*This file utilizes the DFRobot library to 
   interface the TCS34725 library, look at the library headers for
   things to use */
-
+//pins:
+//Green Wire = A4
+//Blue Wire = A5
+//Black Wire = GND
+//Red Wire = 5V
 //integration time is 154ms
 // 2_4,    24,    50,   101,   154,   700 | possible times (ms)
 //1024, 10240, 20480, 43008, 65358, 65358 | max count

@@ -186,7 +186,7 @@ def collectEventBasedData(ser, file):
 def getFile():
     file = None
     mode = ""
-    baseHead = "Color Temperature,Lux,Clear,R,G,B,Raw Red,Raw Green,Raw Blue,R,G,B"
+    baseHead = "Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
     while(True):
         mode = input("Time or event based data collection? Enter T or E: ")
         name = input("Enter test name to append to file name: ")
