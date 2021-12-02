@@ -1,3 +1,4 @@
+import os
 from sys import getdefaultencoding
 from serial import *
 from time import localtime,strftime,sleep
