@@ -1,0 +1,14 @@
+{
+  "headings": {
+    "time based": {
+      "conductivity": "time(s),value",
+      "temperature": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
+    },
+    "event based": {
+      "conductivity": "event,value",
+      "temperature": "event,Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
+    }
+  },
+  "probe": "conductivity",
+  "time based": "Y"
+}
