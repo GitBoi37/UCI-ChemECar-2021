@@ -24,7 +24,6 @@ def connect(arduino_port, tout, baud):
 
 
 def getPort():
-    
     while(True):
         try:
             portIn = input("What is the number of the port being used? It is the com port selected in the arduino IDE. Enter the number only: ")
@@ -34,65 +33,6 @@ def getPort():
             print("Unknown error")
             print(e)
     return arduino_port
-
-
-
-
-def makeFileTimeBased(header, location, name):
-    current_time = localtime()
-    fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-    fileName = f"{location}/{name}_time_based_data_{fTime}.csv" #name of csv generated
-    print("Checking directory...")
-    try:
-        os.makedirs(location)
-        print(f"Make folder to store data in {location}")
-    except Exception as e:
-        # directory already exists
-        print(e)
-        pass
-
-    print("Creating .csv file...")
-    try:
-        file = open(fileName, "w")
-        file.write("")
-        file.write(f"{header}\n")
-        print(f"file created at {os.path.realpath(file.name)}")
-        #print(f"File created at {print(pathlib.Path(file).parent.absolute())}!")
-    except Exception as e:
-        print(e)
-        if(file.closed   != True):
-            file.close()
-    return file
-
-
-
-
-def makeFileEventBased(header, location, name):
-    current_time = localtime()
-    fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-    fileName = f"{location}/{name}_event_based_data_{fTime}.csv" #name of csv generated
-    print("Checking directory...")
-    try:
-        os.makedirs(location)
-        print(f"Make folder to store data in \"{location}\"")
-    except Exception as e:
-        # directory already exists
-        print(e)
-        pass
-    print("Creating .csv file...")
-    try:
-        file = open(fileName, "w")
-        file.write("")
-        file.write(f"{header}\n")
-        print(f"file created at {os.path.realpath(file.name)}")
-        #print(f"File created at {print(pathlib.Path(file).parent.absolute())}!")
-    except Exception as e:
-        print(e)
-        if(file.closed() != True):
-            file.close()
-
-    
-    return file
 
 
 
@@ -191,27 +131,42 @@ def collectEventBasedData(ser, file):
 
 
 
-def makeFile(header):
+def makeFile(header, location):
     file = None
-    mode = ""
-    baseHead = "Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
     while(True):
-        mode = input("Time or event based data collection? Enter T or E: ")
         name = input("Enter test name to append to file name: ")
-        if(mode == "T"):
-            header = f"time(s),{baseHead}"
-            file = makeFileTimeBased(header, location, name)
-            break
-        elif(mode == "E"):
-            header = f"input,{baseHead}"
-            file = makeFileEventBased(header, location, name)
-            break
-        else:
-            print("Invalid input")
-    return (file,mode)
+        current_time = localtime()
+        fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
+        fileName = f"{location}/{name}_event_based_data_{fTime}.csv" #name of csv generated
+        print("Checking directory...")
+        try:
+            os.makedirs(location)
+            print(f"Make folder to store data in \"{location}\"")
+        except Exception as e:
+            # directory already exists
+            print(e)
+            pass
+        print("Creating .csv file...")
+        try:
+            file = open(fileName, "w")
+            file.write("")
+            file.write(f"{header}\n")
+            print(f"file created at {os.path.realpath(file.name)}")
+        except Exception as e:
+            print(e)
+            if(file != None):
+                if(file.closed() != True):
+                    file.close()
+
+        return file
 
 
-def getHeader(probe, timebased, data):
+
+
+def getData(data):
+    header = ""
+    probe = data["probe"]
+    timebased = data["time based"]
     if(probe == "conductivity"):
         if(timebased == "Y"):
             header = data["headings"]["time based"]["conductivity"]
@@ -234,7 +189,11 @@ def getHeader(probe, timebased, data):
         print("Invalid config file! AAAAAAAAAAAAAAAAAAAA")
         sleep(1)
         sys.exit()
-    return header
+    return (header,probe,timebased)
+
+
+
+
 
 def cleanup(file):
     try:
@@ -261,21 +220,23 @@ if __name__ == "__main__":
 
     ser = connect(arduino_port, tout, baud)
 
-
     with open("data_collection_config.json") as json_data_file:
         data = json.load(json_data_file)
-    probe = data["probe"]
-    timebased = data["time based"]
-    header = getHeader(probe, timebased, data)
+        
+    (header,probe, timebased) = getData(data)
     
-    (file, mode) = makeFile()
+    file = makeFile(header, location)
 
-    if(mode == "T"):
+    if(timebased == "Y"):
         print("Beginnning time based data collection")
         collectTimeBasedData(ser, file)
     else:
         print("Beginning event based data collection")
         collectEventBasedData(ser, file)
-
-    cleanup(file)
-    
+    try:
+        if(file != None):
+            cleanup(file)
+    except Exception as e:
+        #I don't know what could go wrong here but yanever know, I'm bad at coding so it'll probably happen
+        print("Something went wrnog trying to cleanup, but it's likely not catastrophic, have a great day!")
+        print(e)
