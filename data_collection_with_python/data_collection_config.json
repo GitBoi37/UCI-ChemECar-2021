@@ -1,14 +1,23 @@
 {
   "headings": {
-    "time based": {
-      "conductivity": "time(s),value",
-      "temperature": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
+    "measureTimeToValue":{
+      "conductivity": "time(s),start value,end value,delta"
+      "color": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
     },
-    "event based": {
-      "conductivity": "event,value",
-      "temperature": "event,Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
+    "noMeasureTimeToValue":{
+      "conductivity": {
+        "Y": "time(s),value",
+        "N": "test name,value"
+      },
+      "color": {
+        "Y": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B",
+        "N": "test name,Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
+      }
     }
   },
   "probe": "conductivity",
-  "time based": "Y"
+  "time based": "Y",
+  "measureTimeToValue": "Y",
+  "deltaT": "0.25",
+  "maxT": "180"
 }
