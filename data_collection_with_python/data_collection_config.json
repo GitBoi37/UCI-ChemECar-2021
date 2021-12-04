@@ -1,7 +1,7 @@
 {
   "headings": {
     "measureTimeToValue":{
-      "conductivity": "time(s),start value,end value,delta"
+      "conductivity": "time(s),start value,end value,delta",
       "color": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
     },
     "noMeasureTimeToValue":{

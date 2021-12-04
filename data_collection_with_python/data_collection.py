@@ -375,7 +375,7 @@ if __name__ == "__main__":
                 print("Beginning event based conductivitiy data collection")
                 collectEventBasedConductivityData(ser,file, deltaT, maxT)
     else:
-        #insert functions to measure time it takes to get to a certain value here
+        #functions to measure time it takes to get to a certain value here
         if(probe == "color"):
             print("It's measuring the time it takes to get to a value with the color sensor o'clock!")
             measureColorTime(ser, file)
