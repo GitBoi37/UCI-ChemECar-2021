@@ -53,23 +53,24 @@ def readConfig(config_file):
     timebased = data["time based"]
     deltaT = data["deltaT"]
     maxT = data["maxT"]
-    measureTimeToValue = data["measureTimeToValue"]
+    measureTimeToValue = data["measure time to endpoint"]
     headings = data["headings"]
+    conductivityIncrease = data["does conductivity increase or decrease"]
     if(measureTimeToValue == "Y"):
         try:
-            header = headings["measureTimeToValue"][probe]
+            header = headings["time to endpoint"][probe]
         except Exception as e:
-            print(f"Error readings config in the measuretimetovalue section:\n{e}")
+            print(f"Error readings config in the 'time to endpoint' section:\n{e}")
     elif(measureTimeToValue == "N"):
         try:
-            header = headings["noMeasureTimeToValue"][probe][timebased]
+            header = headings["value over time or event"][probe][timebased]
         except Exception as e:
-            print(f"Error reading config in the nomeasuretimetovalue section:\n{e}")
+            print(f"Error reading config in the 'value over time or event' section:\n{e}")
     else:
         print("unrecognized measuretimetovalue value, must be Y or N")
         sleep(1)
         sys.exit()
-    return (header,probe,timebased, deltaT, maxT, measureTimeToValue)
+    return (header,probe,timebased, deltaT, maxT, measureTimeToValue, conductivityIncrease)
 
 
 def makeFile(header, location):
@@ -264,10 +265,14 @@ def collectEventBasedConductivityData(ser, file):
 def measureColorTime(ser, file):
     print("this function is not implemented yet... sorry about that...")
 
-def measureConductivityTime(ser, file, deltaT, maxT):
+def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
     # IF THERE IS A PROBLEM THIS IS PROBABLY WRONG
     checkLen = 3
+    endValue = input("Input sensor value of endpoint, will record starting value when this is entered so be ready")
     print("This function is also not implemented fully yet lol... oops")
+    print("Data collection time!")
+    
+    #collect a starting point to measure delta
     sValue = None
     while(True):
         ser.flushInput()
@@ -283,60 +288,67 @@ def measureConductivityTime(ser, file, deltaT, maxT):
         except Exception as e:
             print("not having a good time collecting data")
             print(e)
-        
-    i = "e"
     #outer loop for taking multiple trials
+    print("Recorded starting point... starting continuous data collection when ready... type anything to start...")
+    input()
     while(True):
-        i = input("Input value to measure the time until it reaches that or end to end: ")
-        if(i == "end"):
-            print("Ending collection...")
-            break
-        print("\nUse Ctrl^C to end while collecting data")
-        try:
-            print("Data collection time!")
-            abs_start = time.time()
-            eValue = ""
-            while True:  
-                loopStart = time.time()
-                ser.flushInput()
-                try:
-                    while(True):
-                        #get and display data to terminal
-                        ser.flushInput()
-                        getData = str(ser.readline())
-                        try:
-                            dataLen= len(getData)
-                            eValue = getData[2:-5] #starting from second position, go to end -5 from back, not sure if this works
-                            if(dataLen < checkLen):
-                                print("invalid data point, remeasuring...")
-                            else:
-                                break
-                        except Exception as e:
-                            print("not having a good time collecting data")
-                            print(e)
-                    #measure time passed and do corrections to make deltaT epic
-                    delta = time.time() - loopStart
-                    if(delta < deltaT):
-                        sleep(deltaT - delta)
-                    timeSinceStart = time.time() - abs_start
-                    
-                    #if time elapsed passed maxT then it don't matta
-                    if(timeSinceStart > maxT):
+        abs_start = time.time()
+        data = ""
+        timeSinceStart = 0
+        while True:  
+            loopStart = time.time()
+            ser.flushInput()
+            try:
+                while(True):
+                    #get and display data to terminal
+                    ser.flushInput()
+                    data = str(ser.readline())
+                    try:
+                        dataLen= len(data)
+                        data = data[2:-5] #starting from second position, go to end -5 from back, not sure if this works
+                        if(dataLen < checkLen):
+                            print("invalid data point, remeasuring...")
+                        else:
+                            break
+                    except Exception as e:
+                        print("not having a good time collecting data")
+                        print(e)
+
+                    print(data)
+                #measure time passed and do corrections to make deltaT epic
+                delta = time.time() - loopStart
+                if(delta < deltaT):
+                    sleep(deltaT - delta)
+                timeSinceStart = time.time() - abs_start
+
+                #if we're measuring a conductivity increase, then value measured must be greater than endpoint and vice versa
+                if(conductivityIncrease == "increase"):
+                    #stop data collection if elapsed time is greater than config max or if data is greater than end
+                    if(timeSinceStart > maxT or float(data) > float(endValue)):
                         break
-                    if(float(eValue > float(i))):
+                else:
+                    #stop data collection if elapsed time is greater than config max or if data is less than end
+                    if(timeSinceStart > maxT or float(data) < float(endValue)):
                         break
-                except IOError as e:
-                    print(e)
-                except TypeError(str):
-                    print("invalid str in")
-                except SerialException:
-                    print("Problem collecting data from Arduino")
-                except SerialTimeoutException:
-                    print("Connection timed out")
-            file.write(f"{timeSinceStart},{sValue},{eValue},{str(float(eValue) - float(sValue))}\n")   
-        except KeyboardInterrupt:
-            print("Program interrupted, ending data collection")
+            except IOError as e:
+                print(e)
+            except SerialException as e:
+                print("Problem collecting data from Arduino")
+                print(e)
+            except SerialTimeoutException:
+                print("Connection timed out")
+        file.write(f"{timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")   
         
+
+'''
+too much work
+
+def editConfig(config_file):
+    with open(config_file) as json_data_file:
+        data = json.load(json_data_file)
+    
+    print(data)
+'''        
 
 
 if __name__ == "__main__":
@@ -345,48 +357,58 @@ if __name__ == "__main__":
     location = "data" #folder location of collected data
     file = None
     mode = ""
-    print("Starting up...")
-    sleep(1)
-
-    arduino_port = getPort()
-
-    ser = connect(arduino_port, tout, baud)
-
-    (header,probe, timebased, deltaT, maxT, measureTime) = readConfig("data_collection_config.json")
+    config_file = "data_collection_config.json"
     
-    file = makeFile(header, location)
-    #I separated out collection of color and conductivity data even though the process is very similar since I didn't want to do some weird thing
-    #and for that to end up not working, plus the implementation of the data collection could change and then I would need to figure another thing
-    #out so it would be easier to just separate things out. Right now they are the exact same and I need to test how this works with the conductivity
-    #probe but will need to revise this at a later hour when I can bust those babies out
-    if(measureTime == "N"):
-        if(timebased == "Y"):
-            if(probe == "color"):
-                print("Beginnning time based color data collection")
-                collectTimeBasedColorData(ser, file, deltaT, maxT)
-            else:
-                print("Beginning time based conductivity data collection")
-                collectTimeBasedConductivityData(ser, file, deltaT, maxT)
-        else:
-            if(probe == "color"):
-                print("Beginning event based color data collection")
-                collectEventBasedColorData(ser, file, deltaT, maxT)
-            else:
-                print("Beginning event based conductivitiy data collection")
-                collectEventBasedConductivityData(ser,file, deltaT, maxT)
-    else:
-        #functions to measure time it takes to get to a certain value here
-        if(probe == "color"):
-            print("It's measuring the time it takes to get to a value with the color sensor o'clock!")
-            measureColorTime(ser, file)
-        else:
-            print("It's measuring the time it takes to get to  a value with the conductivity probe o'clock!")
-            measureConductivityTime(ser, file)
+    print("To exit at any time, press CTRL + C")
+    while(True):
+        try:
+            arduino_port = getPort()
 
-    try:
-        if(file != None):
-            cleanup(file)
-    except Exception as e:
-        #I don't know what could go wrong here but yanever know, I'm bad at coding so it'll probably happen
-        print("Something went wrnog trying to cleanup, but it's likely not catastrophic, have a great day!")
-        print(e)
+            ser = connect(arduino_port, tout, baud)
+
+            (header,probe, timebased, deltaT, maxT, measureTime,conductivityIncrease) = readConfig(config_file)
+
+            file = makeFile(header, location)
+            
+            #I separated out collection of color and conductivity data even though the process is very similar since I didn't want to do some weird thing
+            #and for that to end up not working, plus the implementation of the data collection could change and then I would need to figure another thing
+            #out so it would be easier to just separate things out. Right now they are the exact same and I need to test how this works with the conductivity
+            #probe but will need to revise this at a later hour when I can bust those babies out
+            if(measureTime == "N"):
+                if(timebased == "Y"):
+                    if(probe == "color"):
+                        print("Beginnning time based color data collection")
+                        collectTimeBasedColorData(ser, file, deltaT, maxT)
+                    else:
+                        print("Beginning time based conductivity data collection")
+                        collectTimeBasedConductivityData(ser, file, deltaT, maxT)
+                else:
+                    if(probe == "color"):
+                        print("Beginning event based color data collection")
+                        collectEventBasedColorData(ser, file)
+                    else:
+                        print("Beginning event based conductivitiy data collection")
+                        collectEventBasedConductivityData(ser,file)
+            else:
+                #functions to measure time it takes to get to a certain value here
+                if(probe == "color"):
+                    print("It's measuring the time it takes to get to a value with the color sensor o'clock!")
+                    measureColorTime(ser, file, deltaT, maxT)
+                else:
+                    print("It's measuring the time it takes to get to  a value with the conductivity probe o'clock!")
+                    measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease)
+        except KeyboardInterrupt:
+            i = input("Y to exit, anything else to start over")
+            if(i == "Y"):
+                print("cleaning up and exiting")
+                try:
+                    if(file != None):
+                        cleanup(file)
+                except Exception as e:
+                    #I don't know what could go wrong here but yanever know, I'm bad at coding so it'll probably happen
+                    print("Something went wrnog trying to cleanup, but it's likely not catastrophic, have a great day!")
+                    print(e)
+                finally:
+                    break
+            else:
+                print("Starting over")

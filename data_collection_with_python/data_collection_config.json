@@ -1,23 +1,24 @@
 {
   "headings": {
-    "measureTimeToValue":{
+    "time to endpoint":{
       "conductivity": "time(s),start value,end value,delta",
       "color": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
     },
-    "noMeasureTimeToValue":{
+    "value over time or event":{
       "conductivity": {
         "Y": "time(s),value",
-        "N": "test name,value"
+        "N": "test name,value" 
       },
       "color": {
         "Y": "time(s),Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B",
         "N": "test name,Color Temperature,Lux,Clear,Raw Red,Raw Green,Raw Blue,R,G,B"
-      }
+      } 
     }
   },
   "probe": "conductivity",
+  "does conductivity increase or decrease": "increase",
   "time based": "Y",
-  "measureTimeToValue": "Y",
+  "measure time to endpoint": "Y",
   "deltaT": "0.25",
-  "maxT": "180"
+  "maxT": "360"
 }
