@@ -10,12 +10,14 @@ test_getRawData is definitely broken for the old sensor for some reason
 test_getRGB is not broken for any sensors, unsure of working status, using first test for now
 color_reproduction is good but requires a specific pinup on the breadboard which is in the comments
 
-For data collection:
+Data collection code development disclaimers:
 I have preserved the working code as data_collection_manual_input.exe
 data_collection_manual_input.exe is 
 Testing has to be done on the new code (data_collection.exe) which not only utilizes a configuration file to streamline data collection but also contains the mode of operation dedicated to measuring the time
 until a given data point is reached
 
+For developer:
+If you modify the .py scripts and wonder why the .exe doesn't reflect any of your changes simply launch the appropriate .bat script and that will rebuild the .exe and delete any created files in the process, very helpful
 
 To collect data launch the .exe file in the data_collection_with_python folder and follow the prompts, this should work without anything else to be installed. The arduino must be connected to the same computer and running the data_collection_arduino code with serial monitor set to 9600 baud. 
  -- THE SERIAL MONITOR WINDOW MUST BE CLOSED -
