@@ -3,7 +3,7 @@ from time import localtime,strftime,sleep
 import json
 
 def connect(arduino_port, tout, baud):
-    print("Connecting to serial port...")
+    print(f"Connecting to serial port {arduino_port}")
     try:
         ser = Serial(
             port=arduino_port,
@@ -13,8 +13,10 @@ def connect(arduino_port, tout, baud):
             rtscts=0,
             interCharTimeout=None
         )
-    except (SerialException,FileNotFoundError):
+    
+    except Exception as e:
         print("Aborting program... wrong port / port in use / nothin in port")
+        print(e)
         sleep(4)
         sys.exit()
     print(f"Connected to Arduino port: {arduino_port}")
@@ -50,12 +52,15 @@ def readConfig(config_file):
         data = json.load(json_data_file)
     header = ""
     probe = data["probe"]
+    baud = data["baud"]
     timebased = data["time based"]
-    deltaT = data["deltaT"]
-    maxT = data["maxT"]
+    deltaT = float(data["deltaT"])
+    maxT = float(data["maxT"])
+    arduino_port = "COM" + data["COM port"]
     measureTimeToValue = data["measure time to endpoint"]
     headings = data["headings"]
     conductivityIncrease = data["does conductivity increase or decrease"]
+    append = data["to append to file name"]
     if(measureTimeToValue == "Y"):
         try:
             header = headings["time to endpoint"][probe]
@@ -70,16 +75,19 @@ def readConfig(config_file):
         print("unrecognized measuretimetovalue value, must be Y or N")
         sleep(1)
         sys.exit()
-    return (header,probe,timebased, deltaT, maxT, measureTimeToValue, conductivityIncrease)
+    return (header,probe,timebased, deltaT, maxT, measureTimeToValue, conductivityIncrease, baud, arduino_port, append)
 
 
-def makeFile(header, location):
+def makeFile(header, location, append):
     file = None
     while(True):
         name = input("Enter test name to append to file name: ")
         current_time = localtime()
         fTime= strftime('y%Y_m%m_d%d_h%H_m%M', current_time)
-        fileName = f"{location}/{name}_event_based_data_{fTime}.csv" #name of csv generated
+        if(append != ""):
+            fileName = f"{location}/{name}_{append}_data_{fTime}.csv" #name of csv generated
+        else:
+            fileName = f"{location}/{name}_{append}_data_{fTime}.csv" #name of csv generated
         print("Checking directory...")
         try:
             os.makedirs(location)
@@ -148,8 +156,10 @@ def collectTimeBasedColorData(ser, file, deltaT, maxT):
 
 
 def collectTimeBasedConductivityData(ser, file, deltaT, maxT):
+    maxT = float(maxT)
+    deltaT = float(deltaT)
     try:
-        print("Data collection time!")
+        print("Time Based Conducitivity Data collection time!")
         abs_start = time.time()
         while True:  
             loopStart = time.time()
@@ -158,25 +168,34 @@ def collectTimeBasedConductivityData(ser, file, deltaT, maxT):
                 while(True):
                     #get and display data to terminal
                     ser.flushInput()
-                    getData = str(ser.readline())
-                    dataLen= len(getData[0:].split(","))
+                    rawData = str(ser.readline())
+                    print(f"Raw data: {rawData}", end="  |  ")
+                    dataLen= len(rawData[0:].split(","))
+                    print(f"Length of data: {dataLen}", end="  |  ")
                     #len3 = len(getData.split(","))
                     #print(f"Raw data, len 1, len2, len 3: {getData} , {len(getData[0:])} , {len2} , {len3}")
-                    data = getData[0:][2:-5]
-                    print(f"Data: {data}")
-                    if(dataLen < 6):
+                    data = rawData[0:][2:-5]
+                    print(f"Data: {data}", end = "  |  ")
+                    if(dataLen != 1):
                         print("invalid data point, remeasuring...")
                     else:
                         break
+
+
                 delta = time.time() - loopStart
-                if(delta < deltaT):
+                if(delta < float(deltaT)):
                     sleep(deltaT - delta)
 
                 timeSinceStart = time.time() - abs_start
                 file.write(f"{timeSinceStart},{data}\n")
+                print(f"Wrote to file: {timeSinceStart},{data}")
                 if(timeSinceStart > maxT):
                     break
-                 
+
+
+            except Exception as e:
+                print(e)
+            '''
             except IOError as e:
                 print(e)
             except TypeError(str):
@@ -185,6 +204,7 @@ def collectTimeBasedConductivityData(ser, file, deltaT, maxT):
                 print("Problem collecting data from Arduino")
             except SerialTimeoutException:
                 print("Connection timed out")
+            '''
             
     except:
         print("Program interrupted, ending data collection")
@@ -330,13 +350,8 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                     #stop data collection if elapsed time is greater than config max or if data is less than end
                     if(timeSinceStart > maxT or float(data) < float(endValue)):
                         break
-            except IOError as e:
+            except Exception as e:
                 print(e)
-            except SerialException as e:
-                print("Problem collecting data from Arduino")
-                print(e)
-            except SerialTimeoutException:
-                print("Connection timed out")
         file.write(f"{timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")   
         
 
@@ -352,23 +367,26 @@ def editConfig(config_file):
 
 
 if __name__ == "__main__":
-    baud = 9600 #arduino uno runs at 9600 baud
+    baud = 0 #arduino uno runs at 9600 baud, placeholder value
     tout = 2 #timeout for serial input
     location = "data" #folder location of collected data
     file = None
     mode = ""
     config_file = "data_collection_config.json"
     
+    (header,probe, timebased, deltaT, maxT, measureTime,conductivityIncrease, baud, arduino_port, append) = readConfig(config_file)
+
+    # arduino_port = getPort()
+            
+    ser = connect(arduino_port, tout, baud)
+
+    
     print("To exit at any time, press CTRL + C")
     while(True):
         try:
-            arduino_port = getPort()
 
-            ser = connect(arduino_port, tout, baud)
-
-            (header,probe, timebased, deltaT, maxT, measureTime,conductivityIncrease) = readConfig(config_file)
-
-            file = makeFile(header, location)
+            
+            file = makeFile(header, location, append)
             
             #I separated out collection of color and conductivity data even though the process is very similar since I didn't want to do some weird thing
             #and for that to end up not working, plus the implementation of the data collection could change and then I would need to figure another thing

@@ -18,7 +18,10 @@
   "probe": "conductivity",
   "does conductivity increase or decrease": "increase",
   "time based": "Y",
-  "measure time to endpoint": "Y",
+  "measure time to endpoint": "N",
   "deltaT": "0.25",
-  "maxT": "360"
+  "maxT": "360.0",
+  "baud": "115200",
+  "COM port": "4",
+  "to append to file name": ""
 }

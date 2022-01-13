@@ -27,6 +27,7 @@
 #define EC_PIN A1
 float voltage,ecValue,temperature = 25;
 DFRobot_EC ec;
+uint32_t timeInterval = 50; //milliseconds (1000 millis = 1 second)
 
 void setup()
 {
@@ -37,7 +38,7 @@ void setup()
 void loop()
 {
     static unsigned long timepoint = millis();
-    if(millis()-timepoint>1000U)  //time interval: 1s
+    if(millis()-timepoint>timeInterval)  //time interval: 1s
     {
       timepoint = millis();
       voltage = analogRead(EC_PIN)/1024.0*5000;   // read the voltage
