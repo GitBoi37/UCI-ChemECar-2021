@@ -321,6 +321,9 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                     if(conductivityIncrease == "increase"):
                         if(float(data) > endpt):
                             break
+                    else:
+                        if(float(data) < endpt):
+                            break
 
                     #quit if max time exceeded
                     timeSinceStart = time.time() - abs_start
@@ -330,6 +333,8 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                 except Exception as e:
                     print(e)
             file.write(f"{timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")   
+            print(f"Wrote to file: {timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")
+
         except:
             print("Program interrupted, ending data collection")
             break
