@@ -1,3 +1,4 @@
+from calendar import TUESDAY
 from serial import *
 from time import localtime,strftime,sleep
 import json
@@ -159,7 +160,7 @@ def collectTimeBasedConductivityData(ser, file, deltaT, maxT):
     maxT = float(maxT)
     deltaT = float(deltaT)
     try:
-        print("Time Based Conducitivity Data collection time!")
+        print("Initiating time based conductivity data collection sequence")
         abs_start = time.time()
         while True:  
             loopStart = time.time()
@@ -195,17 +196,7 @@ def collectTimeBasedConductivityData(ser, file, deltaT, maxT):
 
             except Exception as e:
                 print(e)
-            '''
-            except IOError as e:
-                print(e)
-            except TypeError(str):
-                print("invalid str in")
-            except SerialException:
-                print("Problem collecting data from Arduino")
-            except SerialTimeoutException:
-                print("Connection timed out")
-            '''
-            
+
     except:
         print("Program interrupted, ending data collection")
 
@@ -285,74 +276,63 @@ def collectEventBasedConductivityData(ser, file):
 def measureColorTime(ser, file):
     print("this function is not implemented yet... sorry about that...")
 
-def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
-    # IF THERE IS A PROBLEM THIS IS PROBABLY WRONG
-    checkLen = 3
-    endValue = input("Input sensor value of endpoint, will record starting value when this is entered so be ready")
-    print("This function is also not implemented fully yet lol... oops")
-    print("Data collection time!")
+def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease): 
+    maxT = float(maxT)
+    deltaT = float(deltaT)
     
-    #collect a starting point to measure delta
-    sValue = None
+    #outer loop for multiple trials
     while(True):
-        ser.flushInput()
-        sleep(0.25)
-        getData = str(ser.readline())
-        try:
-            len2 = len(getData)
-            if(len2 < checkLen):
-                print("invalid start point, remeasuring")
-            else:
-                sValue = getData[0:][2:-5]
-                break
-        except Exception as e:
-            print("not having a good time collecting data")
-            print(e)
-    #outer loop for taking multiple trials
-    print("Recorded starting point... starting continuous data collection when ready... type anything to start...")
-    input()
-    while(True):
-        abs_start = time.time()
-        data = ""
         timeSinceStart = 0
-        while True:  
-            loopStart = time.time()
-            ser.flushInput()
-            try:
-                while(True):
+        data = ""
+        s = True
+        sValue = 0
+        try:
+            endpt = float(input("Enter the value to end data collection: "))
+            abs_start = time.time()
+            #loop to handle data collection / processing
+            while True:  
+                loopStart = time.time()
+                ser.flushInput()
+                try:
                     #get and display data to terminal
-                    ser.flushInput()
-                    data = str(ser.readline())
-                    try:
-                        dataLen= len(data)
-                        data = data[2:-5] #starting from second position, go to end -5 from back, not sure if this works
-                        if(dataLen < checkLen):
+                    while(True):
+                        ser.flushInput()
+                        rawData = str(ser.readline())
+                        #print(f"Raw data: {rawData}", end="  |  ")
+                        dataLen= len(rawData[0:].split(","))
+                        #print(f"Length of data: {dataLen}", end="  |  ")
+                        #len3 = len(getData.split(","))
+                        #print(f"Raw data, len 1, len2, len 3: {getData} , {len(getData[0:])} , {len2} , {len3}")
+                        data = rawData[0:][2:-5]
+                        print(f"Data: {data}", end = "  |  ")
+                        if(dataLen != 1):
                             print("invalid data point, remeasuring...")
                         else:
                             break
-                    except Exception as e:
-                        print("not having a good time collecting data")
-                        print(e)
+                    
+                    #collected data, synchronize with time step
+                    delta = time.time() - loopStart
+                    if(delta < float(deltaT)):
+                        sleep(deltaT - delta)
+                    
+                    if(s):
+                        sValue = data
+                    
+                    if(conductivityIncrease == "Y"):
+                        if(data > endpt):
+                            break
 
-                    print(data)
-                #measure time passed and do corrections to make deltaT epic
-                delta = time.time() - loopStart
-                if(delta < deltaT):
-                    sleep(deltaT - delta)
-                timeSinceStart = time.time() - abs_start
+                    #quit if max time exceeded
+                    timeSinceStart = time.time() - abs_start
+                    if(timeSinceStart > maxT):
+                        break
 
-                #if we're measuring a conductivity increase, then value measured must be greater than endpoint and vice versa
-                if(conductivityIncrease == "increase"):
-                    #stop data collection if elapsed time is greater than config max or if data is greater than end
-                    if(timeSinceStart > maxT or float(data) > float(endValue)):
-                        break
-                else:
-                    #stop data collection if elapsed time is greater than config max or if data is less than end
-                    if(timeSinceStart > maxT or float(data) < float(endValue)):
-                        break
-            except Exception as e:
-                print(e)
-        file.write(f"{timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")   
+                except Exception as e:
+                    print(e)
+            file.write(f"{timeSinceStart},{sValue},{data},{str(float(data) - float(sValue))}\n")   
+        except:
+            print("Program interrupted, ending data collection")
+            break
         
 
 '''
@@ -379,7 +359,6 @@ if __name__ == "__main__":
     # arduino_port = getPort()
             
     ser = connect(arduino_port, tout, baud)
-
     
     print("To exit at any time, press CTRL + C")
     while(True):
