@@ -16,9 +16,9 @@
     }
   },
   "probe": "conductivity",
-  "does conductivity increase or decrease": "increase",
+  "does conductivity increase or decrease": "decrease",
   "time based": "Y",
-  "measure time to endpoint": "N",
+  "measure time to endpoint": "Y",
   "deltaT": "0.25",
   "maxT": "360.0",
   "baud": "115200",

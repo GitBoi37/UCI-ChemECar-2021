@@ -318,8 +318,8 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                     if(s):
                         sValue = data
                     
-                    if(conductivityIncrease == "Y"):
-                        if(data > endpt):
+                    if(conductivityIncrease == "increase"):
+                        if(float(data) > endpt):
                             break
 
                     #quit if max time exceeded
