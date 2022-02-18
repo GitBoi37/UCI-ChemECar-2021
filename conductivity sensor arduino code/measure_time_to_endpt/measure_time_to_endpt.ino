@@ -28,6 +28,7 @@
 float voltage,ecValue,temperature = 25;
 DFRobot_EC ec;
 float endpoint = 10.5
+int x = 0;
 unsigned long startTime;
 void setup()
 {
@@ -38,24 +39,30 @@ void setup()
 
 void loop()
 {
-    static unsigned long timepoint = millis();
-    if(millis()-timepoint>250U)  //time interval: 0.25s
-    {
-      timepoint = millis();
-      voltage = analogRead(EC_PIN)/1024.0*5000;   // read the voltage
-      //temperature = readTemperature();          // read your temperature sensor to execute temperature compensation
-      ecValue =  ec.readEC(voltage,temperature);  // convert voltage to EC with temperature compensation
-      Serial.print("temperature:");
-      Serial.print(temperature,1);
-      Serial.print("^C  EC:");
-      Serial.print(ecValue,2);
-      Serial.println("ms/cm");
-      //if value is within 0.05 range of endpoint then stop the loop
-      if(abs(endpoint - ecValue) < 0.05){
-        Serial.print("Time to endpoint: ");
-        Serial.println(millis() - startTime);
-        break
-      }
+    Serial.println("Enter anything here to start data collection");
+    while (Serial.available() <= 0)
+    {}
+    x = (Serial.read());
+    while(1){
+      static unsigned long timepoint = millis();
+      if(millis()-timepoint>250U)  //time interval: 0.25s
+      {
+        timepoint = millis();
+        voltage = analogRead(EC_PIN)/1024.0*5000;   // read the voltage
+        //temperature = readTemperature();          // read your temperature sensor to execute temperature compensation
+        ecValue =  ec.readEC(voltage,temperature);  // convert voltage to EC with temperature compensation
+        Serial.print("temperature:");
+        Serial.print(temperature,1);
+        Serial.print("^C  EC:");
+        Serial.print(ecValue,2);
+        Serial.println("ms/cm");
+        //if value is within 0.05 range of endpoint then stop the loop
+        if(abs(endpoint - ecValue) < 0.05){
+          Serial.print("Time to endpoint: ");
+          Serial.println(millis() - startTime);
+          break
+        }
+      }  
     }
     ec.calibration(voltage,temperature);          // calibration process by Serail CMD
 }

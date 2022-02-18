@@ -298,9 +298,9 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                     while(True):
                         ser.flushInput()
                         rawData = str(ser.readline())
-                        #print(f"Raw data: {rawData}", end="  |  ")
+                        print(f"Raw data: {rawData}", end="  |  ")
                         dataLen= len(rawData[0:].split(","))
-                        #print(f"Length of data: {dataLen}", end="  |  ")
+                        print(f"Length of data: {dataLen}", end="  |  ")
                         #len3 = len(getData.split(","))
                         #print(f"Raw data, len 1, len2, len 3: {getData} , {len(getData[0:])} , {len2} , {len3}")
                         data = rawData[0:][2:-5]
@@ -308,6 +308,7 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                         if(dataLen != 1):
                             print("invalid data point, remeasuring...")
                         else:
+                            print("Valid")
                             break
                     
                     #collected data, synchronize with time step
@@ -317,6 +318,7 @@ def measureConductivityTime(ser, file, deltaT, maxT, conductivityIncrease):
                     
                     if(s):
                         sValue = data
+                        s = False
                     
                     if(conductivityIncrease == "increase"):
                         if(float(data) > endpt):
