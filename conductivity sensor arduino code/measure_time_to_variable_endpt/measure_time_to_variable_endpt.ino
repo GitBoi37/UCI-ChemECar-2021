@@ -27,7 +27,7 @@
 #define EC_PIN A1
 float voltage,ecValue,temperature = 25;
 DFRobot_EC ec;
-float endpoint = 10.5
+float endpoint = 10.5;
 int x = 0;
 unsigned long startTime;
 void setup()
@@ -60,7 +60,7 @@ void loop()
         if(abs(endpoint - ecValue) < 0.05){
           Serial.print("Time to endpoint: ");
           Serial.println(millis() - startTime);
-          break
+          break;
         }
       }  
     }
