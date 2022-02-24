@@ -30,6 +30,7 @@ DFRobot_EC ec;
 float endpoint = 10.5;
 int x = 0;
 unsigned long startTime;
+unsigned long thousand = 1000;
 void setup()
 {
   Serial.begin(115200);  
@@ -42,7 +43,7 @@ void loop()
     Serial.println("Enter anything here to start data collection");
     while (Serial.available() <= 0)
     {}
-    x = (Serial.read());
+    startTime = millis();
     while(1){
       static unsigned long timepoint = millis();
       if(millis()-timepoint>250U)  //time interval: 0.25s
@@ -55,14 +56,19 @@ void loop()
         Serial.print(temperature,1);
         Serial.print("^C  EC:");
         Serial.print(ecValue,2);
-        Serial.println("ms/cm");
+        Serial.print("ms/cm Endpoint:");
+        Serial.print(endpoint,2);
+        Serial.print("ms/cm Delta: ");
+        Serial.print(endpoint-ecValue);
+        Serial.print("ms/cm Time: ");
+        Serial.println(float((millis() - startTime))/float(thousand));
         //if value is within 0.05 range of endpoint then stop the loop
         if(abs(endpoint - ecValue) < 0.05){
           Serial.print("Time to endpoint: ");
-          Serial.println(millis() - startTime);
+          Serial.println(float(millis() - startTime)/float(thousand));
           break;
         }
-      }  
+      } 
     }
     ec.calibration(voltage,temperature);          // calibration process by Serail CMD
 }
