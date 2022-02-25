@@ -1,6 +1,15 @@
+#include "DFRobot_EC.h"
+#include <EEPROM.h>
+
+#define EC_PIN A1
+
+//for ec probe
+float voltage,ecValue,temperature = 25;
+DFRobot_EC ec;
+float endrange = 0.05;
+
+//for button
 const int button_pin = 2;
-int numLoops = 1;
-int targetValue = 10;
 //runs once when the arduino turns on
 void setup() {
   pinMode(button_pin, INPUT);
@@ -16,14 +25,15 @@ void loop() {
     
     //once the button has been pressed do loop code until some condition is met
     //normally you would read the sensor value here in place of numloops
-    while(numLoops < targetValue){
+    while(abs(targetValue - ecValue) > endrange){
+      voltage = analogRead(EC_PIN)/1024.0*5000;
+      ecValue = ec.readEC(voltage,temperature);
       //also normally this would just be something like powermotor() or digitalpin(4, HIGH) to open a relay to power the motor
-      Serial.print("Looped through ");
-      Serial.print(numLoops);
-      Serial.println(" times");
-      numLoops += 1;
-      delay(500);
+      Serial.print("Button pushed, checking conductivity: ");
+      Serial.print(ec);
+      Serial.println("ms/cm");
+      delay(100);
     }
-    numLoops = 0;
+    Serial.println("ENDPOINT REACHED! Resetting");
   }
 }
