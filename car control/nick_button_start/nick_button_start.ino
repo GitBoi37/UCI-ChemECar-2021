@@ -3,7 +3,7 @@
 unsigned long startTime;
 float t;
 bool moving = 0;
-float endTime = 5;
+float endTime = 180;
 
 
 int Relay = 3;
