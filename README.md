@@ -4,12 +4,20 @@ Repository created by Lance to centralize code storage for the UCI ChemE Car Tea
 ## Quick Start Guide:
 Most files have descriptive names, but if you're wondering what exactly you need for a specific task I've documented it here!
 
-Code relevant to Nick's starting team:
+Nick's starting team:
+1. [To test operation of car](https://github.com/GitBoi37/UCI-ChemECar-2021/blob/main/car%20control/nick_button_start/nick_button_start.ino)
 
-Want to test the operation of the car? Just go navigate 
-Code relevant to Sama's starting team:
+Sama's starting team:
+1. [To test operation of car](https://github.com/GitBoi37/UCI-ChemECar-2021/blob/main/car%20control/sama_button_start/sama_button_start.ino)
 
-Code relevant to Giselle's stopping team(s)s:
+Giselle's stopping team(s)s:
+1. [To collect time-to-endpoint data](https://github.com/GitBoi37/UCI-ChemECar-2021/tree/main/conductivity%20sensor%20arduino%20code)
+
+If you don't want to be harassed to input a specific endpoint, choose the measure_time_to_endpt code and hardcode a value in as the *endpoint* variable on line 30. Once you've made this change you need to compile and push it to the arduino. If you're going to be changing the endpoint after every test, choose the measure_time_to_variable_endpt code.
+
+2. [To test car with stopping reaction running](https://github.com/GitBoi37/UCI-ChemECar-2021/blob/main/car%20control/button_start_w_conductivity/button_start_w_conductivity.ino)
+
+Tweak targetvalue variable to whatever you want it to be and run the car off a 9V. 
 
 
 If you don't have GitHub Desktop installed or if that's not working for whatever reason (which I would recommend if you're updating this code often, you basically just click a button and it synchronizes the repository on your local machine to whatever I've pushed to the server) then you can download the .zip file on the website or copy paste
