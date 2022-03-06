@@ -1,6 +1,6 @@
 # UCIChemECar2021
 Repository created by Lance to centralize code storage and stop google docs
-If you don't have GitHub Desktop installed or if that's not working for whatever reason (which I would recommend if iyou're updating this code often, you basically just click a button and it synchronizes the repository on your local machine to whatever I've pushed to the server) then you can download the .zip file on the website
+If you don't have GitHub Desktop installed or if that's not working for whatever reason (which I would recommend if iyou're updating this code often, you basically just click a button and it synchronizes the repository on your local machine to whatever I've pushed to the server) then you can download the .zip file on the website or copy paste
 If one of the arduino scripts doesn't work, specifically one using the DFRobot library, install necessary libraries
 Some libraries can be found in the libraries folder, some others may be required to be installed
 
@@ -8,13 +8,7 @@ rgb sensor tests:
 test_DFRobot has worked the best so far
 test_getRawData is definitely broken for the old sensor for some reason
 test_getRGB is not broken for any sensors, unsure of working status, using first test for now
-color_reproduction is good but requires a specific pinup on the breadboard which is in the comments
-
-Data collection code development disclaimers:
-I have preserved the working code as data_collection_manual_input.exe
-data_collection_manual_input.exe is 
-Testing has to be done on the new code (data_collection.exe) which not only utilizes a configuration file to streamline data collection but also contains the mode of operation dedicated to measuring the time
-until a given data point is reached
+color_reproduction is good but requires a specific pinup on the breadboard which is in the comments of the code
 
 For developer:
 If you modify the .py scripts and wonder why the .exe doesn't reflect any of your changes simply launch the appropriate .bat script and that will rebuild the .exe and delete any created files in the process, very helpful
