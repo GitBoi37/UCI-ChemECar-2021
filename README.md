@@ -16,12 +16,11 @@ Giselle's stopping team(s)s:
 3. [To collect time-to-endpoint conductivity data with an endpoint that changes every trial](https://github.com/GitBoi37/UCI-ChemECar-2021/blob/main/conductivity%20sensor%20arduino%20code/measure_time_to_variable_endpt/measure_time_to_variable_endpt.ino)
 
 4. [To test car with stopping reaction running](https://github.com/GitBoi37/UCI-ChemECar-2021/blob/main/car%20control/button_start_w_conductivity/button_start_w_conductivity.ino)
- tweak targetvalue variable to be whatever endpoint you want it to be and run the car off a 9V. 
+ tweak targetvalue variable to be whatever endpoint you want it to be and run the car off a 9V. Requires a pretty specific set-up so just talk to me if you wanna do this.
 
 If you don't want to be harassed to input a specific endpoint, choose the measure_time_to_endpt code and hardcode a value in as the *endpoint* variable on line 30. Once you've made this change you need to compile and push it to the arduino. If you're going to be changing the endpoint after every test, choose the measure_time_to_variable_endpt code.
 
-Control of car:
-** note ** requires arduino to be set up very specifically, talk to to me if you want to do this
+
 
 
 
