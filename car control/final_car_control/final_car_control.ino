@@ -8,6 +8,8 @@ float voltage,ecValue,temperature = 25;
 DFRobot_EC ec;
 float endrange = 0.05;
 float targetValue = 3;
+unsigned long timeToWait = 5000; //5 seconds
+
 
 //for button
 const int button_pin = 2;
@@ -31,6 +33,7 @@ void loop() {
   if(pinValue == HIGH){
     //once the button has been pressed do loop code until some condition is met
     delay(250);
+    delay(timeToWait);
     Serial.print("Button pushed, checking conductivity: ");
     while(abs(targetValue - ecValue) > endrange){
       digitalWrite(Relay, HIGH);
