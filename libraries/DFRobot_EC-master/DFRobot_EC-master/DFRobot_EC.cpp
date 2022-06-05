@@ -169,6 +169,8 @@ void DFRobot_EC::ecCalibration(byte mode)
         break;
         case 2:
         if(enterCalibrationFlag){
+            Serial.print(F("raw value: "))
+            Serial.println(rawEc);
             if((this->_rawEC>0.9)&&(this->_rawEC<1.9)){                         //recognize 1.413us/cm buffer solution
                 compECsolution = 1.413*(1.0+0.0185*(this->_temperature-25.0));  //temperature compensation
             }else if((this->_rawEC>9)&&(this->_rawEC<16.8)){                    //recognize 12.88ms/cm buffer solution

@@ -7,8 +7,8 @@
 float voltage,ecValue,temperature = 25;
 DFRobot_EC ec;
 float endrange = 0.05;
-float targetValue = 3;
-unsigned long timeToWait = 5000; //5 seconds
+float targetValue = 7;
+unsigned long timeToWait = 2500; //5 seconds
 
 
 //for button
